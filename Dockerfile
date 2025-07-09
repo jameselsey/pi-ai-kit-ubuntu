@@ -38,4 +38,8 @@ RUN git clone --depth 1 https://github.com/raspberrypi/rpicam-apps.git
 RUN git clone https://github.com/hailo-ai/hailo-rpi5-examples.git && \
     cd hailo-rpi5-examples && ./download_resources.sh
 
+# Create aliases for python and pip
+RUN ln -sf /usr/bin/python3 /usr/local/bin/python && \
+    ln -sf /usr/bin/pip3 /usr/local/bin/pip
+
 CMD ["/bin/sh", "-c", "bash"]
