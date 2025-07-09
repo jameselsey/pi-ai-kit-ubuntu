@@ -42,4 +42,15 @@ RUN git clone https://github.com/hailo-ai/hailo-rpi5-examples.git && \
 RUN ln -sf /usr/bin/python3 /usr/local/bin/python && \
     ln -sf /usr/bin/pip3 /usr/local/bin/pip
 
+# Nifty hack so that the install.sh works. That script comes from another repo, does a "sudo", however our container here is already running as root
+# This will rewrite any "sudo ..." to just "..." so the script works
+RUN echo -e '#!/bin/sh\n\
+	echo \"[FAKE-SUDO] $@\" >&2\n\
+	exec \"$@\"' > /usr/bin/sudo && chmod +x /usr/bin/sudo
+
+# Automate the install of some libs that need a running system to install
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 CMD ["/bin/sh", "-c", "bash"]
